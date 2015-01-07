@@ -1,0 +1,67 @@
+Graphics 800,600,32,2
+
+timer = CreateTimer(60)
+
+kuva = LoadImage("dude.bmp")
+kuva2 = LoadImage("luoti.bmp") 
+kuva3 = LoadImage("lukio.bmp")
+x = 400
+y = 300
+a = 0
+b = 0
+
+; hullut luodit
+Type luoti
+	Field x
+	Field y
+
+End Type
+
+
+SetBuffer BackBuffer()
+
+; pääsilmukka
+While Not KeyHit(1)
+
+	Cls
+	DrawImage kuva3, a, b
+	DrawImage kuva, x, y
+
+	; kontrollit
+	If KeyDown(200) Then
+		y = y - 2
+		suunta = 1
+	EndIf
+	
+	If KeyDown(203) Then 
+		x = x - 2
+		suunta = 2
+	EndIf
+		
+	If KeyDown(205) Then 
+		x = x + 2
+		suunta = 3
+	EndIf
+	
+	If KeyDown(208) Then 
+		y = y + 2
+		suunta = 4
+	EndIf
+	
+	; ase
+	If KeyDown(57) Then 
+		l.luoti = New luoti
+		l\x# = x
+		l\y# = y
+	EndIf
+	
+	For l.luoti = Each luoti
+		l\y = l\y - 1
+		DrawImage kuva2,l\x,l\y
+		If l\y < 0 Then Delete l
+	Next
+	
+	; hahmon ja piirto
+	WaitTimer(timer)
+	Flip
+Wend
