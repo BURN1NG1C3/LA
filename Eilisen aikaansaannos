@@ -1,0 +1,30 @@
+Graphics 800,600
+
+; määritellään muuttujat
+Global kuva
+Global hahmonX	
+Global hahmonY
+
+; pelihahmo
+Type pelaaja
+	Field x#,y#
+End Type
+hahmo.pelaaja = New pelaaja
+kuva=LoadImage ("dude.bmp")
+hahmo\x#=200
+hahmo\y#=200
+
+; pääsilmukka
+While Not KeyHit(1)
+	;kontrollit
+	If KeyDown(200) Then hahmonY= hahmo\y# + 2
+	If KeyDown(203) Then hahmonX= hahmo\x# - 2
+	If KeyDown(205) Then hahmonX= hahmo\x# + 2
+	If KeyDown(208) Then hahmonY= hahmo\y# - 2
+	;päivitetään sijainti ja piirretään
+	hahmo\x# = hahmonX
+	hahmo\y# = hahmonY
+	DrawImage kuva, hahmo\x#, hahmo\y#
+Wend
+
+	
