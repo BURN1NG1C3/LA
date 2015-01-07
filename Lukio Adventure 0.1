@@ -3,6 +3,7 @@ Graphics 800,600,32,2
 timer = CreateTimer(60)
 
 kuva = LoadImage("dude.bmp")
+MidHandle kuva
 kuva2 = LoadImage("luoti.bmp") 
 kuva3 = LoadImage("lukio.bmp")
 x = 400
@@ -52,7 +53,7 @@ While Not KeyHit(1)
 	If KeyDown(57) Then 
 		l.luoti = New luoti
 		l\x# = x
-		l\y# = y
+		l\y# = y - 25
 	EndIf
 	
 	For l.luoti = Each luoti
