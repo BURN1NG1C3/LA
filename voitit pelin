@@ -1,0 +1,95 @@
+Graphics 800,600,32,2
+
+timer = CreateTimer(60)
+
+AutoMidHandle True
+kuva = LoadImage("dude.bmp")
+kuva2 = LoadImage("luoti.bmp") 
+kuva3 = LoadImage("lukio.bmp")
+kuva4 = LoadImage("homo.bmp")
+kuva5 = LoadImage("voitit.bmp")
+x = 400
+y = 550
+a = 400
+b = 300
+voitit = 0
+; hullut luodit
+Type luoti
+	Field x
+	Field y
+End Type
+
+; hullut lukio homot
+Type homo
+	Field x
+	Field y
+End Type
+
+SetBuffer BackBuffer()
+
+For j = 1 To 5
+	h.homo = New homo
+	h\x = 200 + 50*j
+	h\y = 300
+Next
+; pääsilmukka
+While Not KeyHit(1)
+
+	Cls
+	DrawImage kuva3, a, b
+	DrawImage kuva, x, y
+
+	If voitit = 5 Then
+		DrawImage kuva5, a, b
+		voitit = voitit - 1
+	EndIf
+	
+	; kontrollit
+	If KeyDown(200) Then
+		y = y - 2
+		suunta = 1
+	EndIf
+	
+	If KeyDown(203) Then 
+		x = x - 2
+		suunta = 2
+	EndIf
+		
+	If KeyDown(205) Then 
+		x = x + 2
+		suunta = 3
+	EndIf
+	
+	If KeyDown(208) Then 
+		y = y + 2
+		suunta = 4
+	EndIf
+	
+	; ase
+	If KeyDown(57) Then 
+		l.luoti = New luoti
+		l\x# = x
+		l\y# = y - 25
+	EndIf
+	
+	For l.luoti = Each luoti
+		l\y = l\y - 5
+		DrawImage kuva2,l\x,l\y
+		If l\y < 0 Then Delete l
+	Next
+
+	For h.homo = Each homo
+		DrawImage kuva4, h\x, h\y
+		For l.luoti = Each luoti
+			If ImagesCollide(kuva2,l\x,l\y,0,kuva4,h\x,h\y,0) Then
+				Delete h
+				Delete l
+				voitit = voitit + 1
+				Exit
+			EndIf
+		Next
+	Next
+	; hahmon ja piirto
+	WaitTimer(timer)
+	Flip
+Wend
