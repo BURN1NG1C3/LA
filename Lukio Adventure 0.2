@@ -1,0 +1,110 @@
+Graphics 800,600,32,2
+
+timer = CreateTimer(60)
+AutoMidHandle True
+kuva = LoadAnimImage("dude.png", 27, 42, 0, 2)
+kuva2 = LoadImage("luoti.png") 
+kuva3 = LoadImage("lukio.png")
+kuva4 = LoadAnimImage("homo.png", 27, 42, 0, 2)
+MaskImage kuva, 255, 255, 255
+MaskImage kuva2, 255, 255, 255
+MaskImage kuva4, 255, 255, 255
+x = 400
+y = 550
+a = 400
+b = 74
+cx = 400
+cy = 300
+voitit = 0
+; hullut luodit
+Type luoti
+	Field x
+	Field y
+End Type
+
+; hullut lukio homot
+Type homo
+	Field x
+	Field y
+End Type
+
+SetBuffer BackBuffer()
+
+For j = 1 To 5
+	h.homo = New homo
+	h\x = 200 + 50*j
+	h\y = 300
+Next
+; pääsilmukka
+While Not KeyHit(1)
+	
+	Cls
+	DrawImage kuva3, a, b
+
+	If MilliSecs() > tmrdude + 300 Then 
+		tmrdude=MilliSecs() ; 'reset' the timer 
+		frmdude=( frmdude + 1 ) Mod 2 ; increment the frame, flip to 0 if we are out 
+	End If 
+	DrawImage kuva ,x ,y ,frmdude ; draw the image 
+		
+	If voitit = 5 Then
+		Cls
+		Text a, b, ("ho,mooopo"), 1, 1
+		Flip
+		Delay 3000
+		End
+		
+	EndIf
+	
+	; kontrollit
+	If KeyDown(200) Then
+		y = y - 2
+		suunta = 1
+	EndIf
+	
+	If KeyDown(203) Then 
+		x = x - 2
+		suunta = 2
+	EndIf
+		
+	If KeyDown(205) Then 
+		x = x + 2
+		suunta = 3
+	EndIf
+	
+	If KeyDown(208) Then 
+		y = y + 2
+		suunta = 4
+	EndIf
+	
+	; ase
+	If KeyDown(57) Then 
+		l.luoti = New luoti
+		l\x# = x
+		l\y# = y - 25
+	EndIf
+	
+	; luodin piirto
+	For l.luoti = Each luoti
+		l\y = l\y - 5
+		DrawImage kuva2,l\x,l\y
+		If l\y < 0 Then Delete l
+	Next
+	
+	; homojen piirto 
+	For h.homo = Each homo
+		DrawImage kuva4 ,h\x ,h\y ,frmdude ; draw the image 
+
+		For l.luoti = Each luoti
+			If ImagesCollide(kuva2,l\x,l\y,0,kuva4,h\x,h\y,0) Then
+				Delete h
+				Delete l
+				voitit = voitit + 1
+				Exit
+			EndIf
+		Next
+	Next
+	
+	WaitTimer(timer)
+	Flip
+Wend
